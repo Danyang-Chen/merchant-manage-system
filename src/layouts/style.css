@@ -1,0 +1,62 @@
+.header{
+    position: fixed;
+    z-index:  1;
+    width: 100%;
+    background-color: rgb(27, 54, 94);
+}
+.hdtitle {
+  color: rgb(209, 216, 230);
+  font-size: 20px;
+  float: left;
+}
+.icon{
+    font-size:40px;
+    margin-right: 20px;
+    margin-top: 15px;
+    color:white;
+    float: left;
+}
+.user{
+    margin-top:-3px;
+    background-color: #fff;
+}
+.avataritem {
+    margin-right: 30px;
+    float: right; 
+  }
+
+
+.mainbar{
+    top:66px; 
+    position: relative;
+}
+.sider{
+    background: #fff;
+    width: 200px;
+    height: 100%;
+    position: fixed;
+    /* left: 0;
+    /* top: 0; */
+    /* bottom: 0;  */
+    /* overflow: 'auto'; */
+}
+.allcontent{
+    margin-left: 192px;
+    padding: 0 24px 24px;
+}
+.breadcrumb{
+    margin: 16px 0;
+}
+.content{
+    background: #fff;
+    padding: 24px;
+    margin:0px;
+    min-height: 450px;
+}
+.footer{
+    height: 50px;
+}
+.fttitle{
+    text-align: center;
+}
+
