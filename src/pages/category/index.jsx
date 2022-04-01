@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { Card, Layout, Row, Col, Button } from 'antd';
+import { Card, Layout, Row, Col, Button, Popconfirm, message } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import styles from './style.less';
 import axios from 'axios';
@@ -21,6 +21,16 @@ const Category = () => {
     });
   }, []);
 
+  function confirm(e) {
+    console.log(e);
+    message.success('确认删除');
+  }
+
+  function cancel(e) {
+    console.log(e);
+    message.error('取消删除');
+  }
+
   return (
     <Fragment>
       {/* <Header className={styles.header}>
@@ -41,7 +51,16 @@ const Category = () => {
                 className={styles.categoryCard}
                 actions={[
                   <EditOutlined key="edit" />,
-                  <DeleteOutlined key="deleteoutlined" />,
+
+                  <Popconfirm
+                    title="确定删除该品类?"
+                    onConfirm={confirm}
+                    onCancel={cancel}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <DeleteOutlined key="deleteoutlined" />
+                  </Popconfirm>,
                 ]}
               >
                 <Meta

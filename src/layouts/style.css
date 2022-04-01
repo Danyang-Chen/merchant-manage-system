@@ -16,19 +16,21 @@
     color:white;
     float: left;
 }
+.avataritem {
+    margin-right: 30px;
+    float: right; 
+}
 .user{
     margin-top:-3px;
     background-color: #fff;
 }
-.avataritem {
-    margin-right: 30px;
-    float: right; 
-  }
+
 
 
 .mainbar{
     top:66px; 
     position: relative;
+    min-width: 1003px;
 }
 .sider{
     background: #fff;

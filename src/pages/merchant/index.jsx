@@ -6,6 +6,7 @@ import {
   Button,
   Pagination,
   PageHeader,
+  Popconfirm,
   message,
 } from 'antd';
 import styles from './style.less';
@@ -27,6 +28,16 @@ const Merchant = () => {
     });
   }, []);
 
+  function confirm(e) {
+    console.log(e);
+    message.success('确认删除');
+  }
+
+  function cancel(e) {
+    console.log(e);
+    message.error('取消删除');
+  }
+
   return (
     <Fragment>
       {/* <Header className={styles.header}>
@@ -47,7 +58,20 @@ const Merchant = () => {
         dataSource={data}
         pagination={{ showQuickJumper: true }}
         renderItem={(item) => (
-          <List.Item actions={[<a>详细</a>, <a>删除</a>]}>
+          <List.Item
+            actions={[
+              <a>详细</a>,
+              <Popconfirm
+                title="确定删除该商家?"
+                onConfirm={confirm}
+                onCancel={cancel}
+                okText="Yes"
+                cancelText="No"
+              >
+                <a>删除</a>
+              </Popconfirm>,
+            ]}
+          >
             <List.Item.Meta
               avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
               title={item.name}

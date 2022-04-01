@@ -1,12 +1,26 @@
 import React, { Fragment, useState } from 'react';
-import { Layout, Menu, Breadcrumb, Avatar, Badge, ConfigProvider } from 'antd';
+import Login from '@/components/Login';
+import {
+  Layout,
+  Menu,
+  Breadcrumb,
+  Avatar,
+  Badge,
+  ConfigProvider,
+  Popover,
+  Button,
+  Modal,
+  Input,
+  Form,
+} from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import {
   TeamOutlined,
   ClusterOutlined,
   UserOutlined,
-  TagsOutlined,
+  DeleteOutlined,
   DesktopOutlined,
+  BellOutlined,
 } from '@ant-design/icons';
 import styles from './style.css';
 import { Link } from 'umi';
@@ -25,14 +39,33 @@ const BasicLayout = ({ children }) => {
             <div className={styles.hdtitle}>青理商家管理信息系统</div>
 
             <span className={styles.avataritem}>
-              <Badge count={1}>
-                <Avatar
-                  src="https://joeschmoe.io/api/v1/random"
-                  className={styles.user}
-                  size="large"
-                />
-              </Badge>
+              <Popover
+                placement="bottomRight"
+                content={
+                  <>
+                    <p>个人设置</p>
+                    <Button
+                      type="link"
+                      onClick={() => {
+                        localStorage.removeItem('currentUser');
+                      }}
+                    >
+                      退出登录
+                    </Button>
+                  </>
+                }
+                trigger="hover"
+              >
+                <Badge count={1}>
+                  <Avatar
+                    src="https://joeschmoe.io/api/v1/random"
+                    className={styles.user}
+                    size="large"
+                  />{' '}
+                </Badge>
+              </Popover>
             </span>
+            <Login />
           </Fragment>
         </Header>
         <Layout className={styles.mainbar}>
@@ -57,7 +90,7 @@ const BasicLayout = ({ children }) => {
               <Menu.Item icon={<UserOutlined />}>
                 <Link to="/manager">负责人管理</Link>
               </Menu.Item>
-              <Menu.Item icon={<TagsOutlined />}>操作系统</Menu.Item>
+              <Menu.Item icon={<DeleteOutlined />}>回收站</Menu.Item>
             </Menu>
           </Sider>
           <Layout className={styles.allcontent}>
