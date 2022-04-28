@@ -1,6 +1,55 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Table, Tag, Space, Popconfirm, message } from 'antd';
+import {
+  Table,
+  Tag,
+  Space,
+  Popconfirm,
+  message,
+  Layout,
+  Select,
+  Button,
+  Input,
+} from 'antd';
 import axios from 'axios';
+import styles from './style.css';
+import { PlusOutlined } from '@ant-design/icons';
+
+const { Header } = Layout;
+
+const { Search } = Input;
+
+const onSearch = (value) => console.log(value);
+
+const options = [
+  { value: '食物', color: 'gold' },
+  { value: '超市', color: 'lime' },
+  { value: '饮品', color: 'green' },
+  { value: '快递', color: 'cyan' },
+  { value: '电子产品', color: 'blue' },
+  { value: '医药', color: 'green' },
+  { value: '美容美发', color: 'pink' },
+  { value: '洗衣店', color: 'blue' },
+  { value: 'blue', color: 'blue' },
+];
+
+function tagRender(props) {
+  const { label, value, closable, onClose, color } = props;
+  const onPreventMouseDown = (event) => {
+    // event.preventDefault();
+    // event.stopPropagation();
+  };
+  return (
+    <Tag
+      color={color}
+      onMouseDown={onPreventMouseDown}
+      closable={closable}
+      onClose={onClose}
+      style={{ marginRight: 3 }}
+    >
+      {label}
+    </Tag>
+  );
+}
 
 const Manager = (props) => {
   const [data, setData] = useState([]);
@@ -33,7 +82,7 @@ const Manager = (props) => {
       dataIndex: 'phone',
     },
     {
-      title: '店铺所属',
+      title: '所属店铺',
       dataIndex: 'merchantList',
     },
     {
@@ -71,6 +120,31 @@ const Manager = (props) => {
 
   return (
     <Fragment>
+      <Header className={styles.header}>
+        <Search
+          placeholder="查询店名、负责人、电话"
+          allowClear
+          onSearch={onSearch}
+          className={styles.search}
+        />
+
+        <Select
+          mode="tags"
+          allowClear
+          placeholder="筛选品类"
+          options={options} //数据化配置选项内容，相比 jsx 定义会获得更好的渲染性能	{ label, value }[]
+          tagRender={tagRender}
+          className={styles.select}
+        />
+
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          className={styles.button}
+        >
+          添加负责人
+        </Button>
+      </Header>
       <Table columns={columns} dataSource={data} />
     </Fragment>
   );

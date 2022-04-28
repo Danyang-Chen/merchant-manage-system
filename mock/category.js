@@ -1,5 +1,3 @@
-import mockjs from 'mockjs';
-
 export default {
   'GET /api/categories': (req, res) => {
     res.json({
