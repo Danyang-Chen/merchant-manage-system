@@ -57,17 +57,14 @@ const Manager = (props) => {
   useEffect(() => {
     axios.get('/api/managers').then((res) => {
       setData(res.data.data);
-      console.log(res);
     });
   }, []);
 
   function confirm(e) {
-    console.log(e);
     message.success('确认删除');
   }
 
   function cancel(e) {
-    console.log(e);
     message.error('取消删除');
   }
 
@@ -108,15 +105,6 @@ const Manager = (props) => {
       ),
     },
   ];
-
-  // const data = [
-  //   {
-  //     name: 'xxx',
-  //     telnumber: ' 17864289546',
-  //     roomname: '校园超市',
-  //     tags: '超市',
-  //   },
-  // ];
 
   return (
     <Fragment>
