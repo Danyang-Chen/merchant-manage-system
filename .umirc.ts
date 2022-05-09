@@ -1,4 +1,13 @@
 import { defineConfig } from 'umi';
+import {
+  TeamOutlined,
+  ClusterOutlined,
+  UserOutlined,
+  DeleteOutlined,
+  DesktopOutlined,
+  PicLeftOutlined,
+  BankOutlined,
+} from '@ant-design/icons';
 
 export default defineConfig({
   nodeModulesTransform: {
@@ -9,11 +18,31 @@ export default defineConfig({
       path: '/',
       component: '@/layouts/BasicLayout',
       routes: [
-        { path: '/test', component: '@/pages/index' },
-        { path: '/merchant', component: '@/pages/merchant' },
-        { path: '/category', component: '@/pages/category' },
-        { path: '/manager', component: '@/pages/manager' },
-        { path: '/record', component: '@/pages/record' },
+        { path: '/', component: '@/pages/introduce' },
+        {
+          icon: 'BankOutlined',
+          name: '商铺管理',
+          path: '/merchant',
+          component: '@/pages/merchant',
+        },
+        {
+          icon: 'UserOutlined',
+          name: '店员管理',
+          path: '/manager',
+          component: '@/pages/manager',
+        },
+        {
+          icon: 'ClusterOutlined',
+          name: '品类管理',
+          path: '/category',
+          component: '@/pages/category',
+        },
+        {
+          icon: 'DeleteOutlined',
+          name: '回收站',
+          path: '/record',
+          component: '@/pages/record',
+        },
       ],
     },
   ],

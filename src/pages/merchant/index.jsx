@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
+import { connect } from 'dva';
 import {
   List,
   Avatar,
@@ -16,23 +17,25 @@ import {
   Tag,
   Input,
   Select,
+  Badge,
+  Radio,
+  Cascader,
 } from 'antd';
 import styles from './style.less';
 import { PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import MerchantDetail from './MerchantDetail';
 
-const options = [
-  { value: '食物', color: 'gold' },
-  { value: '超市', color: 'lime' },
-  { value: '饮品', color: 'green' },
-  { value: '快递', color: 'cyan' },
-  { value: '电子产品', color: 'blue' },
-  { value: '医药', color: 'green' },
-  { value: '美容美发', color: 'pink' },
-  { value: '洗衣店', color: 'blue' },
-  { value: 'blue', color: 'blue' },
-];
+// const options = [
+//   { value: '食物', color: 'gold' },
+//   { value: '超市', color: 'lime' },
+//   { value: '饮品', color: 'green' },
+//   { value: '快递', color: 'cyan' },
+//   { value: '电子产品', color: 'blue' },
+//   { value: '医药', color: 'green' },
+//   { value: '美容美发', color: 'pink' },
+//   { value: '洗衣店', color: 'blue' },
+// ];
 
 function tagRender(props) {
   const { label, value, closable, onClose, color } = props;
@@ -53,7 +56,9 @@ function tagRender(props) {
   );
 }
 
-const Merchant = () => {
+const Merchant = (props) => {
+  const { categoryList } = props;
+
   const [data, setData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -68,14 +73,62 @@ const Merchant = () => {
     });
   }, []);
 
-  function confirm(e) {
-    console.log(e);
-    message.success('确认删除');
-  }
+  const handleDelete = (itemId) => {
+    axios.delete(`/api/merchants/${itemId}`).then((response) => {
+      console.log(response.data);
+      message.success('确认删除');
+    });
+  };
 
   function cancel(e) {
     console.log(e);
     message.error('取消删除');
+  }
+
+  const tagsoptions = categoryList.map((category) => {
+    return {
+      value: category.name,
+      color: category.color,
+    };
+  });
+
+  const cascaderoptions = [
+    {
+      value: '东区',
+      label: '东区',
+      children: [
+        {
+          value: 'D1公寓',
+          label: 'D1公寓',
+          children: [
+            {
+              value: 'xihu',
+              label: 'West Lake',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      value: '北区',
+      label: '北区',
+      children: [
+        {
+          value: 'nanjing',
+          label: 'Nanjing',
+          children: [
+            {
+              value: 'zhonghuamen',
+              label: 'Zhong Hua Men',
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
+  function onChange(value) {
+    console.log(value);
   }
 
   return (
@@ -84,29 +137,39 @@ const Merchant = () => {
         <Form>
           <Row gutter={24}>
             <Col span={8}>
-              <Form.Item name="name" label="商家名称">
+              <Form.Item name="name" label="店铺名称">
                 <Input placeholder="查询店名" allowClear />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item name="category" label="商家品类">
+              <Form.Item name="adress" label="店铺地址">
+                <Cascader
+                  options={cascaderoptions}
+                  onChange={onChange}
+                  changeOnSelect
+                  placeholder="选择店铺所在地址"
+                />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="category" label="所属品类">
                 <Select
                   placeholder="选择品类"
                   allowClear
                   mode="tags"
-                  options={options}
+                  options={tagsoptions}
                   tagRender={tagRender}
                 />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item name="manager" label="商家负责人">
+              <Form.Item name="manager" label="店铺负责人">
                 <Input placeholder="查询负责人" allowClear />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item name="telephone" label="联系方式">
-                <Input placeholder="查询联系方式" allowClear />
+              <Form.Item name="telephone" label="查找电话">
+                <Input placeholder="查询负责人联系电话" allowClear />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -115,6 +178,15 @@ const Merchant = () => {
               </Form.Item>
             </Col>
             <Col span={8}>
+              <Form.Item name="hire" label="店铺是否占用">
+                <Radio.Group>
+                  <Radio value="a">是</Radio>
+                  <Radio value="b">否</Radio>
+                  <Radio value="c">全选</Radio>
+                </Radio.Group>
+              </Form.Item>
+            </Col>
+            <Col span={16}>
               <Button type="primary" className={styles.searchBtn}>
                 查询
               </Button>
@@ -123,6 +195,7 @@ const Merchant = () => {
           </Row>
         </Form>
       </Card>
+
       <Card
         extra={
           <Button
@@ -153,7 +226,7 @@ const Merchant = () => {
                 </a>,
                 <Popconfirm
                   title="确定删除该商家?"
-                  onConfirm={confirm}
+                  onConfirm={() => handleDelete(item.id)}
                   onCancel={cancel}
                   okText="Yes"
                   cancelText="No"
@@ -167,20 +240,20 @@ const Merchant = () => {
                 title={item.name}
                 description={item.address}
               />
-
-              <div>
-                <Tag color="magenta" className={styles.tag}>
+              <Badge offset={[5, 5]}>
+                <Tag
+                  color="magenta"
+                  // className={styles.tag}
+                >
                   食品
                 </Tag>
-                <Tag color="cyan" className={styles.tag}>
-                  美发
-                </Tag>
-              </div>
+              </Badge>
 
               <div className={styles.listItemData}>
                 <span>负责人</span>
                 <p>{item.manager}</p>
               </div>
+
               <div className={styles.listItemData}>
                 <div>负责人联系电话</div>
                 <div>{item.phone}</div>
@@ -193,6 +266,7 @@ const Merchant = () => {
           )}
         />
       </Card>
+
       <MerchantDetail
         dataSource={selectedItem}
         visible={modalVisible}
@@ -202,4 +276,8 @@ const Merchant = () => {
   );
 };
 
-export default Merchant;
+const mapStateToProps = (state) => ({
+  categoryList: state.category.categoryList,
+});
+
+export default connect(mapStateToProps)(Merchant);

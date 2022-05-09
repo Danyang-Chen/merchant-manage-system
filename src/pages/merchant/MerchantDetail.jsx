@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'dva';
 import {
   Modal,
   Form,
@@ -11,28 +12,37 @@ import {
   message,
 } from 'antd';
 import moment from 'moment';
+import axios from 'axios';
 import styles from './style.less';
 
-const options = [
-  { value: '食物', color: 'gold' },
-  { value: '超市', color: 'lime' },
-  { value: '饮品', color: 'green' },
-  { value: '快递', color: 'cyan' },
-  { value: '电子产品', color: 'blue' },
-  { value: '医药', color: 'green' },
-  { value: '美容美发', color: 'pink' },
-  { value: '洗衣店', color: 'blue' },
-  { value: 'blue', color: 'blue' },
-];
+// const options = [
+//   { value: '食物', color: 'gold' },
+//   { value: '超市', color: 'lime' },
+//   { value: '饮品', color: 'green' },
+//   { value: '快递', color: 'cyan' },
+//   { value: '电子产品', color: 'blue' },
+//   { value: '医药', color: 'green' },
+//   { value: '美容美发', color: 'pink' },
+//   { value: '洗衣店', color: 'blue' },
+//   { value: 'blue', color: 'blue' },
+// ];
 
 const MerchantDetail = (props) => {
-  const { dataSource, visible, onCancel } = props;
-  const { name, category, address, startDate, endDate, manager, phone } =
-    dataSource || {};
+  const { dataSource, visible, onCancel, categoryList } = props;
 
   const [mode, setMode] = useState(dataSource ? 'readOnly' : 'write'); // readOnly | write
 
+  const [detail, setDetail] = useState(dataSource || {});
+
   const [form] = Form.useForm(); // useRef
+
+  const { name, category, address, startDate, endDate, manager, phone } =
+    detail;
+
+  useEffect(() => {
+    setMode(dataSource ? 'readOnly' : 'write');
+    setDetail(dataSource || {});
+  }, [dataSource]);
 
   const handleEdit = () => {
     setMode('write');
@@ -59,6 +69,18 @@ const MerchantDetail = (props) => {
       startDate: startDate.format('YYYY-MM-DD'),
       endDate: endDate.format('YYYY-MM-DD'),
     };
+
+    if (dataSource) {
+      axios
+        .put(`/api/merchants/${detail.id}`, fieldsValues)
+        .then((response) => {
+          setDetail(response.data.data);
+        });
+    } else {
+      axios.post('/api/merchants', fieldsValues).then((response) => {
+        setDetail(response.data.data);
+      });
+    }
   };
 
   const initialValues = dataSource
@@ -72,6 +94,13 @@ const MerchantDetail = (props) => {
         phone,
       }
     : {};
+
+  const options = categoryList.map((category) => {
+    return {
+      value: category.name,
+      color: category.color,
+    };
+  });
 
   const buttonGroup = (
     <div className={styles.modalTitle}>
@@ -154,4 +183,8 @@ const MerchantDetail = (props) => {
   );
 };
 
-export default MerchantDetail;
+const mapStateToProps = (state) => ({
+  categoryList: state.category.categoryList,
+});
+
+export default connect(mapStateToProps)(MerchantDetail);

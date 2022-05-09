@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { Card, Layout, Row, Col, Button, Popconfirm, message } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { connect } from 'dva';
 import styles from './style.less';
 import axios from 'axios';
 import { createFromIconfontCN } from '@ant-design/icons';
@@ -12,12 +13,15 @@ const IconFont = createFromIconfontCN({
 const { Header } = Layout;
 const { Meta } = Card;
 
-const Category = () => {
-  const [data, setData] = useState([]);
+const Category = (props) => {
+  const { data, dispatch } = props;
+
+  // const [data, setData] = useState([]);
 
   useEffect(() => {
     axios.get('/api/categories').then((res) => {
-      setData(res.data.data);
+      // setData(res.data.data);
+      dispatch({ type: 'category/saveCategoryList', payload: res.data.data });
     });
   }, []);
 
@@ -31,12 +35,11 @@ const Category = () => {
     message.error('取消删除');
   }
 
+  const info = () => {
+    message.info('可在商铺/店员管理页面筛选获得相应列表');
+  };
   return (
     <Fragment>
-      {/* <Header className={styles.header}>
-        <h2>品类管理</h2>
-      </Header> */}
-
       <Row gutter={[12, 12]}>
         <Col span={6}>
           <Button type="dashed" className={styles.addBtn}>
@@ -72,6 +75,7 @@ const Category = () => {
                   }
                   title={item.name}
                   description="This is the description"
+                  onClick={info}
                 />
               </Card>
             </Col>
@@ -82,4 +86,8 @@ const Category = () => {
   );
 };
 
-export default Category;
+const mapStateToProps = (state) => ({
+  data: state.category.categoryList,
+});
+
+export default connect(mapStateToProps)(Category); // React HOC

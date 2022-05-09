@@ -9,10 +9,16 @@ import {
   Select,
   Button,
   Input,
+  Card,
+  Form,
+  Row,
+  Col,
+  DatePicker,
 } from 'antd';
 import axios from 'axios';
-import styles from './style.css';
+import styles from './style.less';
 import { PlusOutlined } from '@ant-design/icons';
+// import ManagerDetail from './ManagerDetail';
 
 const { Header } = Layout;
 
@@ -108,32 +114,66 @@ const Manager = (props) => {
 
   return (
     <Fragment>
-      <Header className={styles.header}>
-        <Search
-          placeholder="查询店名、负责人、电话"
-          allowClear
-          onSearch={onSearch}
-          className={styles.search}
-        />
+      {/* <ManagerDetail/> */}
+      <Card style={{ marginBottom: 24 }}>
+        <Form>
+          <Row gutter={24}>
+            <Col span={8}>
+              <Form.Item name="name" label="店员姓名">
+                <Input placeholder="查询姓名" allowClear />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="telephone" label="联系方式">
+                <Input placeholder="查询联系方式" allowClear />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="name" label="店员身份证">
+                <Input placeholder="查询身份证号码" allowClear />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="manager" label="所属店铺">
+                <Input placeholder="查询店铺名称" allowClear />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="category" label="负责品类">
+                <Select
+                  placeholder="选择品类"
+                  allowClear
+                  mode="tags"
+                  options={options}
+                  tagRender={tagRender}
+                />
+              </Form.Item>
+            </Col>
 
-        <Select
-          mode="tags"
-          allowClear
-          placeholder="筛选品类"
-          options={options} //数据化配置选项内容，相比 jsx 定义会获得更好的渲染性能	{ label, value }[]
-          tagRender={tagRender}
-          className={styles.select}
-        />
+            <Col span={8}>
+              <Button type="primary" className={styles.searchBtn}>
+                查询
+              </Button>
+              <Button className={styles.resetBtn}>重置</Button>
+            </Col>
+          </Row>
+        </Form>
+      </Card>
 
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          className={styles.button}
-        >
-          添加负责人
-        </Button>
-      </Header>
-      <Table columns={columns} dataSource={data} />
+      <Card
+        extra={
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            className={styles.button}
+            // onClick={() => setModalVisible(true)}
+          >
+            添加商家
+          </Button>
+        }
+      >
+        <Table columns={columns} dataSource={data} />
+      </Card>
     </Fragment>
   );
 };
